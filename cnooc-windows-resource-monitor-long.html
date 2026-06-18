@@ -1,0 +1,1949 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>中海油 Windows 系统资源监控程序</title>
+  <style>
+    :root {
+      --ink: #eef3ff;
+      --muted: #8793b9;
+      --subtle: #6f7ba7;
+      --sea-950: #070a18;
+      --sea-900: #0a1022;
+      --sea-860: #11172f;
+      --sea-780: #1b2345;
+      --cnooc-blue: #49d2ff;
+      --cnooc-cyan: #9fe9ff;
+      --cnooc-violet: #6f3cff;
+      --cnooc-red: #ff5d8f;
+      --amber: #ffd35f;
+      --green: #6effd4;
+      --steel: #dbe6ff;
+      --panel: rgba(8, 11, 24, 0.92);
+      --panel-2: #0d1326;
+      --surface: rgba(13, 18, 38, 0.9);
+      --surface-2: rgba(8, 12, 28, 0.86);
+      --surface-3: rgba(10, 14, 34, 0.92);
+      --line: rgba(103, 122, 196, 0.18);
+      --line-strong: rgba(122, 215, 255, 0.28);
+      --shadow: 0 22px 54px rgba(0, 0, 0, 0.46);
+      --shadow-soft: 0 10px 26px rgba(0, 0, 0, 0.3);
+      --radius: 12px;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1440px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(73, 210, 255, 0.14), transparent 22%),
+        radial-gradient(circle at 78% 0%, rgba(255, 79, 179, 0.16), transparent 26%),
+        radial-gradient(circle at 50% 100%, rgba(116, 40, 255, 0.13), transparent 26%),
+        linear-gradient(180deg, #060812 0%, #05070f 45%, #03050a 100%);
+      color: var(--ink);
+      font-family: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      font-variant-numeric: tabular-nums;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(80, 98, 168, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(80, 98, 168, 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(180deg, transparent 4%, rgba(0, 0, 0, 0.82) 22%, black 68%, transparent 100%);
+    }
+
+    .page {
+      width: 1440px;
+      min-height: 2860px;
+      margin: 0 auto;
+      padding: 28px 40px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(73, 210, 255, 0.08), transparent 20%),
+        radial-gradient(circle at 82% 10%, rgba(255, 79, 179, 0.08), transparent 22%),
+        radial-gradient(circle at 50% 100%, rgba(111, 60, 255, 0.12), transparent 26%);
+      mix-blend-mode: screen;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 360px 1fr 420px;
+      align-items: center;
+      gap: var(--space-6);
+      min-height: 112px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(10, 14, 34, 0.98), rgba(9, 12, 28, 0.94)),
+        linear-gradient(135deg, rgba(73, 210, 255, 0.08), rgba(255, 79, 179, 0.05));
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, var(--cnooc-blue), var(--cnooc-violet) 55%, var(--cnooc-red));
+      height: 4px;
+      opacity: .95;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding-left: var(--space-6);
+    }
+
+    .brand-mark {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(135deg, #1f8fff, #6f3cff 52%, #ff4fb3 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 0 28px rgba(111, 60, 255, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      width: 88px;
+      height: 22px;
+      left: -9px;
+      transform: rotate(-13deg);
+    }
+
+    .brand-mark::before {
+      bottom: 18px;
+      background: var(--cnooc-blue);
+    }
+
+    .brand-mark::after {
+      bottom: 8px;
+      background: var(--cnooc-red);
+      width: 70px;
+      left: 10px;
+    }
+
+    .brand-name {
+      position: relative;
+      display: grid;
+      gap: 2px;
+    }
+
+    .brand-name strong {
+      font-size: 28px;
+      line-height: 1.05;
+      font-weight: 800;
+      color: #f8fbff;
+    }
+
+    .brand-name span {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .headline {
+      text-align: center;
+      display: grid;
+      gap: var(--space-2);
+    }
+
+    .headline h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #f8fbff;
+    }
+
+    .headline .sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .system-state {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      justify-content: start;
+      column-gap: 18px;
+      row-gap: var(--space-3);
+      padding-right: 8px;
+    }
+
+    .state-line {
+      border-left: 2px solid var(--line-strong);
+      padding-left: var(--space-3);
+    }
+
+    .state-line b {
+      display: block;
+      font-size: 15px;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .state-line span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section {
+      position: relative;
+      z-index: 1;
+      margin-top: var(--space-6);
+    }
+
+    .kpi-ribbon {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-3);
+    }
+
+    .kpi {
+      min-height: 118px;
+      padding: 18px 18px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--surface), var(--surface-2));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.02),
+        var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .kpi::before {
+      content: "";
+      position: absolute;
+      width: 86px;
+      height: 86px;
+      top: -44px;
+      right: -30px;
+      border: 1px solid rgba(73, 210, 255, 0.22);
+      transform: rotate(45deg);
+    }
+
+    .kpi label {
+      color: var(--muted);
+      font-size: 13px;
+      display: block;
+      margin-bottom: var(--space-2);
+    }
+
+    .kpi .value {
+      font-size: 33px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .kpi .value small {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .kpi .meta {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--subtle);
+      font-size: 12px;
+    }
+
+    .spark {
+      width: 58px;
+      height: 22px;
+    }
+
+    .panel-grid {
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .grid-main {
+      grid-template-columns: 1.18fr .82fr;
+      align-items: stretch;
+    }
+
+    .grid-two {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .grid-alert {
+      grid-template-columns: .95fr 1.05fr;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(10, 14, 34, 0.98), rgba(9, 12, 28, 0.94)),
+        linear-gradient(135deg, rgba(73, 210, 255, 0.05), rgba(255, 79, 179, 0.03));
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid rgba(103, 122, 196, 0.18);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .panel-title span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .icon {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(73, 210, 255, 0.22);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, rgba(73, 210, 255, 0.1), rgba(255, 79, 179, 0.06));
+      color: var(--cnooc-blue);
+    }
+
+    .status-pill {
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid rgba(110, 255, 212, 0.24);
+      border-radius: 999px;
+      color: var(--green);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      background: rgba(110, 255, 212, 0.12);
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 16px currentColor;
+    }
+
+    .status-pill.warn {
+      color: var(--amber);
+      border-color: rgba(255, 211, 95, 0.26);
+      background: rgba(255, 211, 95, 0.12);
+    }
+
+    .status-pill.danger {
+      color: var(--cnooc-red);
+      border-color: rgba(255, 93, 143, 0.3);
+      background: rgba(255, 93, 143, 0.12);
+    }
+
+    .panel-body {
+      padding: 18px 22px 22px;
+      position: relative;
+    }
+
+    .cpu-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-6);
+      align-items: stretch;
+    }
+
+    .cpu-specs {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .spec-item {
+      min-height: 72px;
+      padding: 13px 14px;
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .spec-item label {
+      color: var(--muted);
+      font-size: 12px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .spec-item strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .spec-item .unit {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .chart-frame {
+      height: 336px;
+      padding: 14px 16px 8px;
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background:
+        linear-gradient(rgba(80, 98, 168, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(80, 98, 168, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(13, 18, 38, 0.96), rgba(8, 12, 28, 0.92));
+      background-size: 52px 52px;
+      position: relative;
+    }
+
+    .chart-caption {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .chart-frame svg {
+      display: block;
+      width: 100%;
+      height: 276px;
+    }
+
+    .axis-labels {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      color: var(--subtle);
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .axis-labels span:not(:first-child) {
+      text-align: center;
+    }
+
+    .memory-layout {
+      display: grid;
+      grid-template-columns: 206px 1fr;
+      gap: var(--space-5, 20px);
+      align-items: start;
+    }
+
+    .radial {
+      width: 196px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      margin: 6px auto 0;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at center, rgba(12, 15, 32, 0.98) 0 58%, transparent 59%),
+        conic-gradient(var(--cnooc-blue) 0 214deg, var(--cnooc-violet) 214deg 244deg, rgba(95, 104, 152, 0.22) 244deg 360deg);
+      box-shadow:
+        inset 0 0 0 1px rgba(95, 104, 152, 0.16),
+        0 0 36px rgba(73, 210, 255, 0.14);
+    }
+
+    .radial-content {
+      text-align: center;
+    }
+
+    .radial-content b {
+      display: block;
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    .radial-content span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .memory-totals {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+    }
+
+    .mini-stat {
+      padding: 10px;
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+    }
+
+    .mini-stat label {
+      color: var(--muted);
+      font-size: 12px;
+      display: block;
+    }
+
+    .mini-stat strong {
+      font-size: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th {
+      text-align: left;
+      color: var(--steel);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 0 10px 9px;
+      border-bottom: 1px solid rgba(103, 122, 196, 0.22);
+    }
+
+    td {
+      padding: 11px 10px;
+      border-bottom: 1px solid rgba(103, 122, 196, 0.16);
+      color: var(--ink);
+      font-size: 13px;
+      vertical-align: middle;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .process-name {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .process-stack {
+      display: grid;
+      gap: 9px;
+    }
+
+    .mem-row {
+      display: grid;
+      grid-template-columns: 1fr 76px;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 11px;
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+    }
+
+    .mem-info {
+      min-width: 0;
+    }
+
+    .mem-info b {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mem-info span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mem-stat {
+      text-align: right;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--cnooc-blue);
+    }
+
+    .mem-stat small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .desc {
+      color: var(--muted);
+    }
+
+    .bar {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(95, 104, 152, 0.22);
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cnooc-blue), var(--cnooc-violet) 60%, var(--cnooc-cyan));
+    }
+
+    .bar.warn span {
+      background: linear-gradient(90deg, var(--amber), var(--cnooc-red));
+    }
+
+    .disk-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+
+    .disk {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+      min-height: 212px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .disk::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cnooc-blue), var(--cnooc-violet) 60%, var(--cnooc-cyan));
+    }
+
+    .disk.danger::after {
+      background: linear-gradient(90deg, var(--amber), var(--cnooc-red));
+    }
+
+    .disk-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .drive {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .drive-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .disk-percent {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--cnooc-blue);
+    }
+
+    .disk.danger .disk-percent {
+      color: var(--cnooc-red);
+    }
+
+    .disk-metrics {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .disk-metrics b {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .horizon {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--steel);
+      font-size: 13px;
+      border-top: 1px solid rgba(103, 122, 196, 0.16);
+      padding-top: 10px;
+    }
+
+    .horizon strong {
+      color: var(--amber);
+      font-size: 18px;
+    }
+
+    .warning-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    .warning-col {
+      display: grid;
+      gap: var(--space-3);
+      align-content: start;
+    }
+
+    .warning-head {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 0 2px;
+    }
+
+    .alert-row {
+      display: grid;
+      grid-template-columns: 72px 1fr 76px;
+      gap: var(--space-3);
+      align-items: center;
+      padding: 13px;
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+    }
+
+    .severity {
+      display: grid;
+      place-items: center;
+      min-height: 42px;
+      min-width: 64px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      color: #09111d;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 10px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .sev-p1 {
+      background: linear-gradient(180deg, #ff7cab, var(--cnooc-red));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 0 18px rgba(255, 93, 143, 0.22);
+    }
+
+    .sev-p2 {
+      background: linear-gradient(180deg, #ffe18a, var(--amber));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.46),
+        0 0 18px rgba(255, 211, 95, 0.18);
+    }
+
+    .sev-p3 {
+      background: linear-gradient(180deg, #c7f4ff, var(--cnooc-cyan));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.52),
+        0 0 18px rgba(73, 210, 255, 0.16);
+    }
+
+    .alert-main b {
+      display: block;
+      font-size: 14px;
+    }
+
+    .alert-main span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .alert-value {
+      text-align: right;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .resource-levels {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+
+    .level-card {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+      min-height: 142px;
+      padding: 14px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .level-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .level-code {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .level-state {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 15px currentColor;
+      color: var(--green);
+    }
+
+    .level-state.warn {
+      background: var(--amber);
+      color: var(--amber);
+    }
+
+    .level-state.danger {
+      background: var(--cnooc-red);
+      color: var(--cnooc-red);
+    }
+
+    .level-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .level-card strong {
+      font-size: 15px;
+    }
+
+    .history-layout {
+      display: grid;
+      grid-template-columns: .72fr 1.28fr;
+      gap: var(--space-4);
+    }
+
+    .time-index {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+      padding: 15px;
+    }
+
+    .time-index h3,
+    .trace h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 86px 1fr 58px;
+      gap: var(--space-3);
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(103, 122, 196, 0.14);
+      font-size: 12px;
+    }
+
+    .time-row:last-child {
+      border-bottom: 0;
+    }
+
+    .time-row span {
+      color: var(--muted);
+    }
+
+    .heat {
+      display: grid;
+      grid-template-columns: repeat(18, 1fr);
+      gap: 3px;
+    }
+
+    .heat i {
+      display: block;
+      height: 16px;
+      border-radius: 3px;
+      background: rgba(73, 84, 146, 0.34);
+    }
+
+    .heat i:nth-child(3n) {
+      background: rgba(73, 210, 255, 0.7);
+    }
+
+    .heat i:nth-child(7n) {
+      background: rgba(255, 211, 95, 0.78);
+    }
+
+    .heat i:nth-child(13n) {
+      background: rgba(255, 93, 143, 0.82);
+    }
+
+    .trace {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+      padding: 15px;
+    }
+
+    .trace svg {
+      display: block;
+      width: 100%;
+      height: 244px;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cnooc-blue);
+    }
+
+    .dot.mem {
+      background: var(--amber);
+    }
+
+    .dot.disk-line {
+      background: var(--cnooc-red);
+    }
+
+    .file-table th:nth-child(1),
+    .file-table td:nth-child(1) {
+      width: 46px;
+      color: var(--muted);
+    }
+
+    .file-table th:nth-child(3),
+    .file-table td:nth-child(3) {
+      width: 96px;
+    }
+
+    .file-table th:nth-child(4),
+    .file-table td:nth-child(4) {
+      width: 86px;
+      text-align: right;
+    }
+
+    .log-layout {
+      display: grid;
+      grid-template-columns: .98fr 1.02fr;
+      gap: var(--space-4);
+      align-items: stretch;
+    }
+
+    .log-summary {
+      display: grid;
+      gap: var(--space-3);
+    }
+
+    .log-metric {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      padding: 15px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+    }
+
+    .log-metric label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .log-metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1.15;
+      margin-top: 4px;
+    }
+
+    .log-metric small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .log-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+    }
+
+    .directory-stack,
+    .rate-board {
+      display: grid;
+      gap: var(--space-3);
+      align-content: start;
+    }
+
+    .directory-table {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(10, 14, 34, 0.96), rgba(8, 12, 28, 0.92));
+      overflow: hidden;
+    }
+
+    .directory-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 82px 96px 92px 70px;
+      gap: var(--space-3);
+      align-items: center;
+      min-height: 48px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(103, 122, 196, 0.14);
+      font-size: 12px;
+    }
+
+    .directory-row:last-child {
+      border-bottom: 0;
+    }
+
+    .directory-head {
+      color: var(--steel);
+      background: linear-gradient(90deg, rgba(73, 210, 255, 0.14), rgba(111, 60, 255, 0.12));
+      font-weight: 700;
+    }
+
+    .directory-path {
+      min-width: 0;
+    }
+
+    .directory-path b,
+    .directory-path span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .directory-path b {
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .directory-path span {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .rate-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+    }
+
+    .rate-card {
+      min-height: 112px;
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(13, 18, 38, 0.9), rgba(8, 12, 28, 0.86));
+    }
+
+    .rate-card label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .rate-card strong {
+      display: block;
+      font-size: 25px;
+      line-height: 1.1;
+    }
+
+    .rate-card small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .week-chart {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      padding: 14px 16px 12px;
+      background:
+        linear-gradient(rgba(80, 98, 168, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(80, 98, 168, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(10, 14, 34, 0.96), rgba(8, 12, 28, 0.92));
+      background-size: 56px 48px;
+    }
+
+    .week-chart-title {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .week-chart svg {
+      display: block;
+      width: 100%;
+      height: 210px;
+    }
+
+    .directory-row .num,
+    .directory-row .space,
+    .directory-row .speed {
+      color: var(--ink);
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .stream {
+      border: 1px solid rgba(103, 122, 196, 0.18);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(10, 14, 34, 0.96), rgba(8, 12, 28, 0.92));
+      overflow: hidden;
+    }
+
+    .stream-row {
+      display: grid;
+      grid-template-columns: 88px 86px 130px 1fr 76px;
+      gap: var(--space-3);
+      align-items: center;
+      min-height: 46px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(103, 122, 196, 0.14);
+      font-size: 12px;
+    }
+
+    .stream-row:last-child {
+      border-bottom: 0;
+    }
+
+    .stream-head {
+      color: var(--steel);
+      background: linear-gradient(90deg, rgba(73, 210, 255, 0.14), rgba(111, 60, 255, 0.12));
+      font-weight: 700;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      height: 24px;
+      border-radius: 999px;
+      padding: 0 8px;
+      font-weight: 800;
+      color: var(--sea-950);
+      background: var(--cnooc-blue);
+    }
+
+    .tag.warn {
+      background: var(--amber);
+    }
+
+    .tag.danger {
+      background: var(--cnooc-red);
+    }
+
+    .tag.ok {
+      background: var(--green);
+    }
+
+    .foot-strip {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: var(--space-6);
+      margin-top: var(--space-6);
+      min-height: 70px;
+      padding: 0 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(10, 14, 34, 0.98), rgba(9, 12, 28, 0.94)),
+        linear-gradient(135deg, rgba(73, 210, 255, 0.06), rgba(255, 79, 179, 0.04));
+      color: var(--muted);
+      font-size: 13px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .foot-strip b {
+      color: var(--ink);
+    }
+
+    .waterline {
+      height: 6px;
+      width: 240px;
+      background:
+        linear-gradient(90deg, var(--cnooc-blue), var(--cnooc-violet) 58%, var(--cnooc-red));
+      clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-name">
+          <strong>中海油 CNOOC</strong>
+        </div>
+      </div>
+      <div class="headline">
+        <h1>中海油系统资源监控程序</h1>
+      </div>
+      <div class="system-state">
+        <div class="state-line">
+          <b>WINDCS-OP-03</b>
+        </div>
+        <div class="state-line">
+          <b>2026-06-18 09:22:47</b>
+        </div>
+        <div class="state-line">
+          <b>采样周期 5s</b>
+        </div>
+        <div class="state-line">
+          <b>采集代理在线</b>
+        </div>
+      </div>
+    </header>
+
+    <section class="section kpi-ribbon" aria-label="核心资源指标">
+      <article class="kpi">
+        <label>CPU 当前使用率</label>
+        <div class="value">73<small>%</small></div>
+        <div class="meta">
+          <span>较5分钟前 +8%</span>
+          <svg class="spark" viewBox="0 0 58 22" aria-hidden="true">
+            <defs>
+              <linearGradient id="kpiCpuLine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#49d2ff"/>
+                <stop offset="70%" stop-color="#6f3cff"/>
+                <stop offset="100%" stop-color="#ffd35f"/>
+              </linearGradient>
+            </defs>
+            <path d="M1 18 C8 17 12 14 16 12 C20 10 24 15 29 13 C34 11 36 4 41 5 C46 6 47 13 52 10 C54 9 56 7 57 6" fill="none" stroke="url(#kpiCpuLine)" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="57" cy="6" r="2.4" fill="#ffd35f"/>
+          </svg>
+        </div>
+      </article>
+      <article class="kpi">
+        <label>内存使用量</label>
+        <div class="value">86.4<small>GB</small></div>
+        <div class="meta">
+          <span>总容量 128GB</span>
+          <svg class="spark" viewBox="0 0 58 22" aria-hidden="true">
+            <defs>
+              <linearGradient id="kpiMemBar" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3ca8ff"/>
+                <stop offset="100%" stop-color="#54f3ff"/>
+              </linearGradient>
+            </defs>
+            <rect x="8" y="5" width="20" height="2.6" rx="1.3" fill="#2a315f"/>
+            <rect x="8" y="5" width="16" height="2.6" rx="1.3" fill="url(#kpiMemBar)"/>
+            <circle cx="26" cy="6.3" r="1.3" fill="#54f3ff"/>
+            <rect x="16" y="10" width="24" height="2.6" rx="1.3" fill="#2a315f"/>
+            <rect x="16" y="10" width="19" height="2.6" rx="1.3" fill="#6f3cff"/>
+            <circle cx="36.5" cy="11.3" r="1.3" fill="#a46dff"/>
+            <rect x="25" y="15" width="24" height="2.6" rx="1.3" fill="#2a315f"/>
+            <rect x="25" y="15" width="21" height="2.6" rx="1.3" fill="#49d2ff"/>
+            <circle cx="47" cy="16.3" r="1.3" fill="#9fe9ff"/>
+          </svg>
+        </div>
+      </article>
+      <article class="kpi">
+        <label>磁盘最高用量</label>
+        <div class="value">91<small>%</small></div>
+        <div class="meta">
+          <span>E: DCS日志盘</span>
+          <svg class="spark" viewBox="0 0 58 22" aria-hidden="true">
+            <rect x="8" y="14" width="4" height="4" rx="1.6" fill="#3f4678"/>
+            <rect x="15" y="12" width="4" height="6" rx="1.6" fill="#5048b8"/>
+            <rect x="22" y="10" width="4" height="8" rx="1.6" fill="#3ca8ff"/>
+            <rect x="29" y="8" width="4" height="10" rx="1.6" fill="#49d2ff"/>
+            <rect x="36" y="6" width="4" height="12" rx="1.6" fill="#8d83ff"/>
+            <rect x="43" y="4" width="4" height="14" rx="1.6" fill="#ffd35f"/>
+            <rect x="50" y="2" width="4" height="16" rx="1.6" fill="#ff5d8f"/>
+          </svg>
+        </div>
+      </article>
+      <article class="kpi">
+        <label>进程阈值告警</label>
+        <div class="value">7<small>个</small></div>
+        <div class="meta">
+          <span>阈值触发 2项</span>
+          <svg class="spark" viewBox="0 0 58 22" aria-hidden="true">
+            <rect x="9" y="11" width="4" height="7" rx="1.7" fill="#3d4475"/>
+            <rect x="16" y="6" width="4" height="12" rx="1.7" fill="#49d2ff"/>
+            <rect x="23" y="13" width="4" height="5" rx="1.7" fill="#3d4475"/>
+            <rect x="30" y="4" width="4" height="14" rx="1.7" fill="#6f3cff"/>
+            <rect x="37" y="8" width="4" height="10" rx="1.7" fill="#a46dff"/>
+            <rect x="44" y="2" width="4" height="16" rx="1.7" fill="#ff5d8f"/>
+            <rect x="51" y="10" width="4" height="8" rx="1.7" fill="#ffd35f"/>
+          </svg>
+        </div>
+      </article>
+      <article class="kpi">
+        <label>日志写入速率</label>
+        <div class="value">12.8<small>k/min</small></div>
+        <div class="meta">
+          <span>监控目录 8个</span>
+          <svg class="spark" viewBox="0 0 58 22" aria-hidden="true">
+            <rect x="9" y="7" width="3" height="10" rx="1.5" fill="#49d2ff"/>
+            <rect x="15" y="4" width="3" height="13" rx="1.5" fill="#9fe9ff"/>
+            <rect x="21" y="8" width="3" height="9" rx="1.5" fill="#3ca8ff"/>
+            <rect x="27" y="3" width="3" height="14" rx="1.5" fill="#54f3ff"/>
+            <rect x="33" y="6" width="3" height="11" rx="1.5" fill="#6f3cff"/>
+            <rect x="39" y="2" width="3" height="15" rx="1.5" fill="#49d2ff"/>
+            <rect x="45" y="9" width="3" height="8" rx="1.5" fill="#9fe9ff"/>
+            <rect x="51" y="5" width="3" height="12" rx="1.5" fill="#54f3ff"/>
+          </svg>
+        </div>
+      </article>
+      <article class="kpi">
+        <label>资源告警项</label>
+        <div class="value">3<small>项</small></div>
+        <div class="meta">
+          <span>CPU / 内存 / 磁盘</span>
+          <svg class="spark" viewBox="0 0 58 22" aria-hidden="true">
+            <rect x="7" y="9" width="13" height="3" rx="1.5" fill="#49d2ff"/>
+            <rect x="22" y="9" width="10" height="3" rx="1.5" fill="#6f3cff"/>
+            <rect x="34" y="9" width="9" height="3" rx="1.5" fill="#ffd35f"/>
+            <rect x="45" y="9" width="8" height="3" rx="1.5" fill="#ff5d8f"/>
+            <circle cx="19" cy="10.5" r="1.8" fill="#9fe9ff"/>
+            <circle cx="42" cy="10.5" r="1.8" fill="#ffc76a"/>
+            <circle cx="53" cy="10.5" r="1.8" fill="#ff82b0"/>
+          </svg>
+        </div>
+      </article>
+    </section>
+
+    <section class="section panel-grid grid-main">
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M4 9h3M4 15h3M17 9h3M17 15h3M9 4v3M15 4v3M9 17v3M15 17v3" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div>
+              <h2>CPU信息</h2>
+              <span>型号、使用率曲线、温度接口与近期峰值</span>
+            </div>
+          </div>
+          <span class="status-pill warn">近60分钟峰值</span>
+        </div>
+        <div class="panel-body cpu-layout">
+          <div class="cpu-specs">
+            <div class="spec-item">
+              <label>处理器型号</label>
+              <strong>Intel Xeon Silver 4314 <span class="unit">@ 2.40GHz</span></strong>
+            </div>
+            <div class="spec-item">
+              <label>核心 / 线程</label>
+              <strong>16C / 32T</strong>
+            </div>
+            <div class="spec-item">
+              <label>近60分钟峰值时间</label>
+              <strong>20:12:30 <span class="unit">已记录</span></strong>
+            </div>
+            <div class="spec-item">
+              <label>近60分钟峰值用量</label>
+              <strong>83<span class="unit">% · 阈值 80%</span></strong>
+            </div>
+          </div>
+          <div class="chart-frame">
+            <div class="chart-caption">
+              <span>CPU 使用率趋势 · 过去 60 分钟</span>
+              <span>阈值线：80% / 90%</span>
+            </div>
+            <svg viewBox="0 0 740 276" role="img" aria-label="CPU 使用率曲线">
+              <defs>
+                <linearGradient id="cpuFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(73, 210, 255, 0.46)"/>
+                  <stop offset="100%" stop-color="rgba(111, 60, 255, 0.04)"/>
+                </linearGradient>
+                <linearGradient id="cpuLine" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#49d2ff"/>
+                  <stop offset="65%" stop-color="#6f3cff"/>
+                  <stop offset="100%" stop-color="#ffd35f"/>
+                </linearGradient>
+              </defs>
+              <g stroke="rgba(80, 98, 168, 0.18)" stroke-width="1">
+                <path d="M0 230H740M0 184H740M0 138H740M0 92H740M0 46H740"/>
+                <path d="M92 0V246M184 0V246M276 0V246M368 0V246M460 0V246M552 0V246M644 0V246"/>
+              </g>
+              <path d="M0 74H740" stroke="rgba(255, 93, 143, 0.55)" stroke-dasharray="9 8" stroke-width="2"/>
+              <path d="M0 100H740" stroke="rgba(255, 211, 95, 0.48)" stroke-dasharray="8 9" stroke-width="2"/>
+              <path d="M0 196 C42 186 67 190 94 176 C129 158 142 121 177 126 C216 132 225 176 260 164 C301 150 312 86 350 94 C390 103 397 148 435 137 C482 122 485 54 530 60 C568 65 583 119 617 111 C661 101 673 52 740 38 L740 246 L0 246Z" fill="url(#cpuFill)"/>
+              <path d="M0 196 C42 186 67 190 94 176 C129 158 142 121 177 126 C216 132 225 176 260 164 C301 150 312 86 350 94 C390 103 397 148 435 137 C482 122 485 54 530 60 C568 65 583 119 617 111 C661 101 673 52 740 38" fill="none" stroke="url(#cpuLine)" stroke-width="4" stroke-linecap="round"/>
+              <g fill="#ffd35f">
+                <circle cx="530" cy="60" r="6"/>
+                <circle cx="740" cy="38" r="6"/>
+              </g>
+              <g fill="#eef3ff" font-size="12" font-family="Microsoft YaHei UI, sans-serif">
+                <text x="548" y="56">83%</text>
+                <text x="658" y="28">近60分钟峰值</text>
+              </g>
+            </svg>
+            <div class="axis-labels">
+              <span>-60m</span><span>-48m</span><span>-36m</span><span>-24m</span><span>-12m</span><span>现在</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h12M6 12h12M6 16h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div>
+              <h2>内存信息</h2>
+              <span>容量、使用量与高消耗进程 TOP5</span>
+            </div>
+          </div>
+          <span class="status-pill">可用 41.6GB</span>
+        </div>
+        <div class="panel-body memory-layout">
+          <div>
+            <div class="radial">
+              <div class="radial-content">
+                <b>68%</b>
+                <span>内存占用</span>
+              </div>
+            </div>
+            <div class="memory-totals">
+              <div class="mini-stat">
+                <label>总容量</label>
+                <strong>128GB</strong>
+              </div>
+              <div class="mini-stat">
+                <label>已使用</label>
+                <strong>86.4GB</strong>
+              </div>
+              <div class="mini-stat">
+                <label>缓存</label>
+                <strong>19.2GB</strong>
+              </div>
+              <div class="mini-stat">
+                <label>提交峰值</label>
+                <strong>103GB</strong>
+              </div>
+            </div>
+          </div>
+          <div class="process-stack" aria-label="内存中高消耗进程 top5">
+            <div class="warning-head"><b>内存高消耗进程 TOP5</b><span>描述 / 用量 / 占比</span></div>
+            <div class="mem-row">
+              <div class="mem-info"><b>hollysysRuntime.exe</b><span>DCS实时控制引擎</span></div>
+              <div class="mem-stat">18.6GB<small>14.5%</small></div>
+            </div>
+            <div class="mem-row">
+              <div class="mem-info"><b>sqlservr.exe</b><span>历史库数据服务</span></div>
+              <div class="mem-stat">15.1GB<small>11.8%</small></div>
+            </div>
+            <div class="mem-row">
+              <div class="mem-info"><b>HistorianCollector.exe</b><span>工艺趋势采集器</span></div>
+              <div class="mem-stat">9.7GB<small>7.6%</small></div>
+            </div>
+            <div class="mem-row">
+              <div class="mem-info"><b>AlarmCenter.exe</b><span>联锁告警聚合服务</span></div>
+              <div class="mem-stat">6.3GB<small>4.9%</small></div>
+            </div>
+            <div class="mem-row">
+              <div class="mem-info"><b>EdgeWebView2.exe</b><span>操作站嵌入式看板</span></div>
+              <div class="mem-stat">4.8GB<small>3.8%</small></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" stroke="currentColor" stroke-width="2"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div>
+            <h2>磁盘信息</h2>
+            <span>各盘容量、用量与按历史增长估算天数</span>
+          </div>
+        </div>
+        <span class="status-pill danger">E盘 空间即将耗尽</span>
+      </div>
+      <div class="panel-body disk-grid">
+        <article class="disk">
+          <div class="disk-top">
+            <div>
+              <div class="drive">C:</div>
+              <div class="drive-label">系统盘 / Windows</div>
+            </div>
+            <div class="disk-percent">62%</div>
+          </div>
+          <div class="bar"><span style="width:62%"></span></div>
+          <div class="disk-metrics">
+            <span>容量 <b>512GB</b></span>
+            <span>已用 <b>317GB</b> · 可用 195GB</span>
+            <span>日均增长 <b>2.4GB</b></span>
+          </div>
+          <div class="horizon"><span>按7日均值估算</span><strong>81天</strong></div>
+        </article>
+        <article class="disk">
+          <div class="disk-top">
+            <div>
+              <div class="drive">D:</div>
+              <div class="drive-label">历史库 / Historian</div>
+            </div>
+            <div class="disk-percent">74%</div>
+          </div>
+          <div class="bar"><span style="width:74%"></span></div>
+          <div class="disk-metrics">
+            <span>容量 <b>2.0TB</b></span>
+            <span>已用 <b>1.48TB</b> · 可用 532GB</span>
+            <span>日均增长 <b>18.6GB</b></span>
+          </div>
+          <div class="horizon"><span>按7日均值估算</span><strong>28天</strong></div>
+        </article>
+        <article class="disk danger">
+          <div class="disk-top">
+            <div>
+              <div class="drive">E:</div>
+              <div class="drive-label">DCS日志 / EventLog</div>
+            </div>
+            <div class="disk-percent">91%</div>
+          </div>
+          <div class="bar warn"><span style="width:91%"></span></div>
+          <div class="disk-metrics">
+            <span>容量 <b>1.0TB</b></span>
+            <span>已用 <b>932GB</b> · 可用 92GB</span>
+            <span>日均增长 <b>31.8GB</b></span>
+          </div>
+          <div class="horizon"><span>按7日均值估算</span><strong>3天</strong></div>
+        </article>
+        <article class="disk">
+          <div class="disk-top">
+            <div>
+              <div class="drive">F:</div>
+              <div class="drive-label">备份盘 / Archive</div>
+            </div>
+            <div class="disk-percent">48%</div>
+          </div>
+          <div class="bar"><span style="width:48%"></span></div>
+          <div class="disk-metrics">
+            <span>容量 <b>4.0TB</b></span>
+            <span>已用 <b>1.91TB</b> · 可用 2.09TB</span>
+            <span>日均增长 <b>11.2GB</b></span>
+          </div>
+          <div class="horizon"><span>按7日均值估算</span><strong>191天</strong></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section panel-grid grid-alert">
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 22 20H2L12 3Z" stroke="currentColor" stroke-width="2"/><path d="M12 9v5M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <h2>进程阈值分级告警</h2>
+              <span>按进程 CPU / 内存阈值和持续时间触发</span>
+            </div>
+          </div>
+          <span class="status-pill warn">7项阈值触发</span>
+        </div>
+        <div class="panel-body warning-layout">
+          <div class="warning-col">
+            <div class="warning-head"><b>CPU高占用</b></div>
+            <div class="alert-row">
+              <div class="severity sev-p1">1</div>
+              <div class="alert-main"><b>hollysysRuntime.exe</b><span>CPU占用超过90%持续5分钟</span></div>
+              <div class="alert-value">94%</div>
+            </div>
+            <div class="alert-row">
+              <div class="severity sev-p2">2</div>
+              <div class="alert-main"><b>TrendRenderSvc.exe</b><span>CPU占用超过80%持续5分钟</span></div>
+              <div class="alert-value">82%</div>
+            </div>
+            <div class="alert-row">
+              <div class="severity sev-p3">3</div>
+              <div class="alert-main"><b>BackupAgent.exe</b><span>CPU占用超过60%持续5分钟</span></div>
+              <div class="alert-value">64%</div>
+            </div>
+          </div>
+          <div class="warning-col">
+            <div class="warning-head"><b>内存高占用</b><span>阈值 70% / 85%</span></div>
+            <div class="alert-row">
+              <div class="severity sev-p1">1</div>
+              <div class="alert-main"><b>sqlservr.exe</b><span>内存占用超过15GB</span></div>
+              <div class="alert-value">15.1G</div>
+            </div>
+            <div class="alert-row">
+              <div class="severity sev-p2">2</div>
+              <div class="alert-main"><b>HistorianCollector.exe</b><span>内存占用超过9GB</span></div>
+              <div class="alert-value">9.7G</div>
+            </div>
+            <div class="alert-row">
+              <div class="severity sev-p3">3</div>
+              <div class="alert-main"><b>EdgeWebView2.exe</b><span>内存占用超过4GB</span></div>
+              <div class="alert-value">4.8G</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 17 10 11 14 15 21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 21h17M4 3v18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <h2>计算机资源分级预警</h2>
+              <span>主机资源综合等级、触发条件与人工处理提示</span>
+            </div>
+          </div>
+          <span class="status-pill warn">当前 L2 关注</span>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 22%">资源项</th>
+                <th style="width: 18%">当前值</th>
+                <th style="width: 20%">等级</th>
+                <th>人工处理提示</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CPU总利用率</td>
+                <td>73%</td>
+                <td><span class="tag warn">L2</span></td>
+                <td class="desc">标记高CPU进程，提示值班人员确认是否处理。</td>
+              </tr>
+              <tr>
+                <td>内存提交量</td>
+                <td>103GB</td>
+                <td><span class="tag warn">L2</span></td>
+                <td class="desc">标记高内存进程，提示值班人员确认是否重启或优化。</td>
+              </tr>
+              <tr>
+                <td>E盘剩余天数</td>
+                <td>3天</td>
+                <td><span class="tag danger">L3</span></td>
+                <td class="desc">提示清理或迁移日志目录，保留操作记录。</td>
+              </tr>
+              <tr>
+                <td>温度采集</td>
+                <td>未接入</td>
+                <td><span class="tag ok">L1</span></td>
+                <td class="desc">仅在接入硬件传感器插件后展示温度趋势。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section class="section panel-grid grid-two">
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <h2>用户大文件 TOP10</h2>
+              <span>按占用容量排序，定位日志与工程文件增长源</span>
+            </div>
+          </div>
+          <span class="status-pill warn">总计 286GB</span>
+        </div>
+        <div class="panel-body">
+          <table class="file-table" aria-label="用户大文件 top10">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>文件路径</th>
+                <th>用户</th>
+                <th>大小</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>01</td><td>D:\Historian\Batch\raw_20260617_01.hdb</td><td>history</td><td>47.6GB</td></tr>
+              <tr><td>02</td><td>E:\DCSLogs\CS03\event_trace_20260617.evtx</td><td>dcsop</td><td>36.2GB</td></tr>
+              <tr><td>03</td><td>F:\Backup\OP03_full_20260615.bak</td><td>backup</td><td>34.8GB</td></tr>
+              <tr><td>04</td><td>D:\TrendCache\areaA_pressure_7d.cache</td><td>trend</td><td>28.5GB</td></tr>
+              <tr><td>05</td><td>E:\AlarmExport\alarm_snapshot_0620.csv</td><td>alarm</td><td>24.1GB</td></tr>
+              <tr><td>06</td><td>C:\ProgramData\Hollysys\Dump\runtime_4314.dmp</td><td>system</td><td>22.9GB</td></tr>
+              <tr><td>07</td><td>D:\Historian\Archive\compress_queue.bin</td><td>history</td><td>21.7GB</td></tr>
+              <tr><td>08</td><td>E:\DCSLogs\OPC\opc_reconnect_debug.log</td><td>opc</td><td>20.4GB</td></tr>
+              <tr><td>09</td><td>F:\Export\operator_screen_record_0617.mp4</td><td>operator</td><td>18.6GB</td></tr>
+              <tr><td>10</td><td>D:\Projects\BJ_Hollysys_DCS\config_pack.zip</td><td>engineer</td><td>15.9GB</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2-5" stroke="currentColor" stroke-width="2"/><path d="M5 4v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h2>资源使用量记录历史回溯</h2>
+              <span>按时间片回放已采集的资源与日志目录数据</span>
+            </div>
+          </div>
+          <span class="status-pill">回溯窗口 24h</span>
+        </div>
+        <div class="panel-body history-layout">
+          <div class="time-index">
+            <h3>阈值触发时间索引</h3>
+            <div class="time-row"><b>08:10</b><div class="heat"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>轻微</span></div>
+            <div class="time-row"><b>11:35</b><div class="heat"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>关注</span></div>
+            <div class="time-row"><b>14:22</b><div class="heat"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>警告</span></div>
+            <div class="time-row"><b>17:48</b><div class="heat"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>警告</span></div>
+            <div class="time-row"><b>20:12</b><div class="heat"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>严重</span></div>
+          </div>
+          <div class="trace">
+            <h3>24小时资源回放曲线</h3>
+            <svg viewBox="0 0 500 244" role="img" aria-label="CPU 内存 磁盘历史曲线">
+              <g stroke="rgba(80, 98, 168, 0.18)" stroke-width="1">
+                <path d="M0 205H500M0 164H500M0 123H500M0 82H500M0 41H500"/>
+                <path d="M80 0V214M160 0V214M240 0V214M320 0V214M400 0V214M480 0V214"/>
+              </g>
+              <path d="M0 170 C42 160 54 128 91 134 C127 140 136 89 170 92 C207 95 217 156 255 141 C297 124 303 78 340 84 C376 90 384 138 419 126 C455 114 463 72 500 64" fill="none" stroke="#49d2ff" stroke-width="3"/>
+              <path d="M0 142 C43 136 59 132 98 130 C138 128 150 120 188 116 C231 111 246 102 286 98 C330 93 346 80 386 82 C430 85 450 70 500 66" fill="none" stroke="#ffd35f" stroke-width="3"/>
+              <path d="M0 196 C43 193 67 187 105 184 C151 180 185 174 222 165 C262 155 295 149 335 133 C371 119 407 96 442 78 C466 65 481 54 500 42" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+              <g fill="#eef3ff" font-size="11" font-family="Microsoft YaHei UI, sans-serif">
+                <text x="408" y="36">E盘增长超阈值</text>
+                <text x="337" y="78">CPU峰值</text>
+              </g>
+            </svg>
+            <div class="legend">
+              <span><i class="dot"></i>CPU</span>
+              <span><i class="dot mem"></i>内存</span>
+              <span><i class="dot disk-line"></i>磁盘</span>
+              <span>回放锚点：20:12:30</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="2"/><path d="M8 9h8M8 13h5M8 17h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <h2>日志目录容量与写入速率监控</h2>
+            <span>不同目录日志数量、占用空间、分钟级写入速率、估算与最近7天趋势</span>
+          </div>
+        </div>
+        <span class="status-pill warn">E盘日志增长偏快</span>
+      </div>
+      <div class="panel-body log-layout">
+        <div class="directory-stack">
+          <div class="log-metric-grid">
+            <div class="log-metric">
+              <label>监控目录</label>
+              <strong>8个</strong>
+              <small>含 EventLog、归档、导出与缓存目录</small>
+            </div>
+            <div class="log-metric">
+              <label>日志文件数量</label>
+              <strong>42,816</strong>
+              <small>较昨日 +2,146 个</small>
+            </div>
+            <div class="log-metric">
+              <label>日志总占用</label>
+              <strong>418GB</strong>
+              <small>E盘占比最高，剩余空间紧张</small>
+            </div>
+          </div>
+          <div class="directory-table" aria-label="不同目录日志数量和占用空间">
+            <div class="directory-row directory-head">
+              <div>目录</div><div>数量</div><div>占用空间</div><div>写入速率</div><div>状态</div>
+            </div>
+            <div class="directory-row">
+              <div class="directory-path"><b>E:\DCSLogs\EventLog</b><span>Windows事件与业务运行日志</span></div>
+              <div class="num">18,420</div><div class="space">156.8GB</div><div class="speed">5.4k/min</div><div><span class="tag warn">偏高</span></div>
+            </div>
+            <div class="directory-row">
+              <div class="directory-path"><b>E:\DCSLogs\Runtime</b><span>应用运行记录与滚动日志</span></div>
+              <div class="num">9,876</div><div class="space">92.3GB</div><div class="speed">3.1k/min</div><div><span class="tag ok">正常</span></div>
+            </div>
+            <div class="directory-row">
+              <div class="directory-path"><b>D:\Historian\Log</b><span>历史库写入与归档日志</span></div>
+              <div class="num">6,204</div><div class="space">78.5GB</div><div class="speed">2.8k/min</div><div><span class="tag warn">关注</span></div>
+            </div>
+            <div class="directory-row">
+              <div class="directory-path"><b>E:\DCSLogs\Export</b><span>手动导出、巡检包与报表日志</span></div>
+              <div class="num">3,918</div><div class="space">43.6GB</div><div class="speed">0.7k/min</div><div><span class="tag ok">正常</span></div>
+            </div>
+            <div class="directory-row">
+              <div class="directory-path"><b>C:\ProgramData\Hollysys\Log</b><span>本机服务日志与诊断缓存</span></div>
+              <div class="num">2,604</div><div class="space">27.4GB</div><div class="speed">0.5k/min</div><div><span class="tag ok">正常</span></div>
+            </div>
+            <div class="directory-row">
+              <div class="directory-path"><b>F:\Archive\DCSLogBackup</b><span>离线归档与压缩备份</span></div>
+              <div class="num">1,794</div><div class="space">19.4GB</div><div class="speed">0.3k/min</div><div><span class="tag ok">正常</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="rate-board">
+          <div class="rate-metrics">
+            <div class="rate-card">
+              <label>当前分钟级写入速率</label>
+              <strong>12.8k/min</strong>
+              <small>较近7日均值 +18.6%</small>
+            </div>
+            <div class="rate-card">
+              <label>历史高峰时段估算</label>
+              <strong>18.9k/min</strong>
+              <small>按近7天同时间段估算</small>
+            </div>
+          </div>
+          <div class="week-chart">
+            <div class="week-chart-title">
+              <span>最近7天分钟级日志写入速率曲线</span>
+              <span>单位：k/min · 采样间隔 1min</span>
+            </div>
+            <svg viewBox="0 0 650 236" role="img" aria-label="最近7天分钟级日志写入速率曲线">
+              <defs>
+                <linearGradient id="logRateFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(73, 210, 255, 0.42)"/>
+                  <stop offset="100%" stop-color="rgba(111, 60, 255, 0.04)"/>
+                </linearGradient>
+              </defs>
+              <g stroke="rgba(80, 98, 168, 0.18)" stroke-width="1">
+                <path d="M0 190H650M0 152H650M0 114H650M0 76H650M0 38H650"/>
+                <path d="M93 0V198M186 0V198M279 0V198M372 0V198M465 0V198M558 0V198"/>
+              </g>
+              <path d="M0 154 C31 144 52 138 82 142 C117 146 132 112 162 116 C197 121 207 160 244 151 C281 142 291 86 327 91 C365 97 374 136 407 129 C446 121 462 75 498 80 C532 84 546 119 578 111 C612 102 626 70 650 63 L650 198 L0 198Z" fill="url(#logRateFill)"/>
+              <path d="M0 154 C31 144 52 138 82 142 C117 146 132 112 162 116 C197 121 207 160 244 151 C281 142 291 86 327 91 C365 97 374 136 407 129 C446 121 462 75 498 80 C532 84 546 119 578 111 C612 102 626 70 650 63" fill="none" stroke="#49d2ff" stroke-width="4" stroke-linecap="round"/>
+              <path d="M0 76H650" stroke="rgba(255, 211, 95, 0.48)" stroke-dasharray="8 9" stroke-width="2"/>
+              <path d="M0 52H650" stroke="rgba(255, 93, 143, 0.55)" stroke-dasharray="9 8" stroke-width="2"/>
+              <g fill="#eef3ff" font-size="12" font-family="Microsoft YaHei UI, sans-serif">
+                <text x="548" y="41">估算峰值 18,900k/min</text>
+                <text x="514" y="74">警戒线 16,000k/min</text>
+              </g>
+              <g fill="#8793b9" font-size="11" font-family="Microsoft YaHei UI, sans-serif">
+                <text x="0" y="224">06-11</text>
+                <text x="91" y="224">06-12</text>
+                <text x="184" y="224">06-13</text>
+                <text x="277" y="224">06-14</text>
+                <text x="370" y="224">06-15</text>
+                <text x="463" y="224">06-16</text>
+                <text x="603" y="224">今日</text>
+              </g>
+            </svg>
+            <div class="legend">
+              <span><i class="dot"></i>实际写入速率</span>
+              <span>峰值周期：每日 20:30-21:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
